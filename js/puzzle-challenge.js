@@ -45,7 +45,9 @@ class PuzzleChallenge {
         gsap.fromTo(this.elements.screen, {y: '100%'}, {y: '0%', duration: 0.5, ease: "power3.out"});
 
         try {
-            const response = await fetch('quran-sync.json');
+            console.log("PuzzleChallenge: Fetching sync data...");
+            const response = await fetch('/quran-sync.json');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             this.ayahs = data.ayahs;
             

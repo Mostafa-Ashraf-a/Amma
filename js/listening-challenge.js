@@ -66,12 +66,28 @@ class ListeningChallenge {
         
         // Load data
         try {
-            const req = await fetch('quran-sync.json');
+            console.log("ListeningChallenge: Fetching sync data...");
+            this.elements.ayahDisplay.innerHTML = '<div class="loading-text">جاري تحميل الآيات...</div>';
+            
+            // Using absolute path /quran-sync.json to ensure it works on subpaths
+            const req = await fetch('/quran-sync.json');
+            if (!req.ok) throw new Error(`HTTP error! status: ${req.status}`);
+            
             this.audioData = await req.json();
+            console.log("ListeningChallenge: Data loaded successfully", this.audioData);
+            
             this.renderAyah();
             this.initAudio();
         } catch(e) {
             console.error("Failed to load sync data", e);
+            this.elements.ayahDisplay.innerHTML = `
+                <div style="color: #f44336; padding: 20px; text-align: center;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>عذراً يا بطل، حدث خطأ في تحميل الآيات!</p>
+                    <small style="display:block; margin-top:5px; opacity:0.7;">${e.message}</small>
+                    <button onclick="location.reload()" style="margin-top:15px; padding: 8px 15px; border-radius: 20px; border:none; background:#ff9800; color:white; font-family:inherit; cursor:pointer;">إعادة المحاولة</button>
+                </div>
+            `;
         }
     }
     
