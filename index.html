@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تطبيق جزء عم - عالم الأبطال</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+
+    <!-- App Container (Mobile Size Simulation on Desktop) -->
+    <div class="app-container">
+        
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="view-section active">
+            <div class="splash-content">
+                <div class="app-logo">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <h1 class="splash-title">جزء عم</h1>
+                <p class="splash-subtitle">عالم الأبطال</p>
+                <div class="splash-loader">
+                    <div class="bounce-dot"></div>
+                    <div class="bounce-dot"></div>
+                    <div class="bounce-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome / Path Selection Screen -->
+        <div id="welcome-screen" class="view-section hidden">
+            <div class="welcome-header">
+                <h2>أهلاً بك يا بطل! 🌟</h2>
+                <p>اختر مسارك لتبدأ أسعد رحلة مع القرآن</p>
+            </div>
+            
+            <div class="paths-container">
+                <button class="path-card kids-path" id="btn-kids-path">
+                    <div class="path-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <div class="path-info">
+                        <h3>مسار الأطفال</h3>
+                        <p>تحديات ممتعة وعالم تفاعلي</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-left path-arrow"></i>
+                </button>
+                
+                <button class="path-card locked-path">
+                    <div class="path-icon"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="path-info">
+                        <h3>مسار الكبار</h3>
+                        <p>خطة حفظ مركزة وتصحيح آلي</p>
+                    </div>
+                    <div class="lock-badge">قريباً</div>
+                </button>
+                
+                <button class="path-card locked-path">
+                    <div class="path-icon"><i class="fa-solid fa-globe"></i></div>
+                    <div class="path-info">
+                        <h3>غير الناطقين بالعربية</h3>
+                        <p>Focus on pronunciation & basics</p>
+                    </div>
+                    <div class="lock-badge">قريباً</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Authentication / Login Screen -->
+        <div id="auth-screen" class="view-section hidden">
+            <div class="auth-wrapper">
+                <div class="auth-header">
+                    <div class="auth-icon"><i class="fa-solid fa-user-shield"></i></div>
+                    <h2>خطوة واحدة للبدء!</h2>
+                    <p>قم بتسجيل الدخول لحفظ تقدمك ونقاطك</p>
+                </div>
+                
+                <div class="social-login">
+                    <button class="social-btn google-btn">
+                        <i class="fa-brands fa-google"></i>
+                        <span>المتابعة باستخدام Google</span>
+                    </button>
+                    <button class="social-btn apple-btn">
+                        <i class="fa-brands fa-apple"></i>
+                        <span>المتابعة باستخدام Apple</span>
+                    </button>
+                </div>
+                
+                <div class="auth-divider">
+                    <span>أو</span>
+                </div>
+                
+                <div class="auth-form">
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" placeholder="البريد الإلكتروني" class="auth-input">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" placeholder="كلمة المرور" class="auth-input">
+                    </div>
+                    
+                    <button class="btn-primary auth-submit" id="btn-login-submit">يلا نبدأ!</button>
+                    
+                    <div class="auth-footer">
+                        <p>ليس لديك حساب؟ <a href="#" class="primary-text">سجل الآن</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Village Details Screen -->
+        <div id="village-screen" class="view-section hidden">
+            <div class="village-header">
+                <button class="back-btn" id="btn-back-to-map">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <div class="village-title-container">
+                    <h2 id="village-screen-title">قرية الإخلاص</h2>
+                    <p>سورة الإخلاص</p>
+                </div>
+                <div class="village-stars">
+                    <i class="fa-regular fa-star" id="star-1"></i>
+                    <i class="fa-regular fa-star" id="star-2"></i>
+                    <i class="fa-regular fa-star" id="star-3"></i>
+                </div>
+            </div>
+            
+            <div class="village-content">
+                <div class="village-mascot">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23FFC107'/><circle cx='35' cy='40' r='8' fill='%23333'/><circle cx='65' cy='40' r='8' fill='%23333'/><path d='M35 65 Q50 80 65 65' fill='none' stroke='%23333' stroke-width='6' stroke-linecap='round'/></svg>" alt="Mascot">
+                    <div class="mascot-bubble">أكمل التحديات بالترتيب لتصبح بطل هذه القرية!</div>
+                </div>
+                
+                <div class="challenges-list">
+                    <!-- Listen Challenge -->
+                    <button class="challenge-item unlocked" id="btn-chal-listen">
+                        <div class="chal-icon"><i class="fa-solid fa-headphones"></i></div>
+                        <div class="chal-info">
+                            <h3>التحدي 1: الاستماع</h3>
+                            <p>استمع للسورة بإنصات</p>
+                        </div>
+                        <div class="chal-status"><i class="fa-solid fa-play"></i></div>
+                    </button>
+                    
+                    <!-- Repeat Challenge -->
+                    <button class="challenge-item locked" id="btn-chal-repeat">
+                        <div class="chal-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div class="chal-info">
+                            <h3>التحدي 2: الترديد</h3>
+                            <p>كرر الآيات مع الشيخ</p>
+                        </div>
+                        <div class="chal-status"><i class="fa-solid fa-lock"></i></div>
+                    </button>
+                    
+                    <!-- Record Challenge (AI) -->
+                    <button class="challenge-item locked highlight" id="btn-chal-record">
+                        <div class="chal-icon"><i class="fa-solid fa-microphone"></i></div>
+                        <div class="chal-info">
+                            <h3>التحدي 3: التلاوة</h3>
+                            <p>سجل صوتك للتقييم</p>
+                        </div>
+                        <div class="chal-status"><i class="fa-solid fa-lock"></i></div>
+                    </button>
+                    
+                    <!-- Quiz Challenge -->
+                    <button class="challenge-item locked" id="btn-chal-quiz">
+                        <div class="chal-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
+                        <div class="chal-info">
+                            <h3>التحدي 4: اللغز</h3>
+                            <p>اختبر حفظك بلعبة سريعة</p>
+                        </div>
+                        <div class="chal-status"><i class="fa-solid fa-lock"></i></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App (Map, Navbar, etc.) -->
+        <div id="main-app" class="view-section hidden">
+            <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="user-info">
+                <div class="avatar-container">
+                    <div class="avatar" id="user-avatar">👦</div>
+                    <div class="level-badge" id="user-level">2</div>
+                </div>
+                <div class="name-xp-container">
+                    <h2 class="user-name" id="user-name">أحمد بطل القرآن</h2>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar" id="xp-bar"></div>
+                        <span class="xp-text" id="xp-text">120 XP</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="streak-container">
+                <i class="fa-solid fa-fire streak-icon"></i>
+                <span class="streak-days" id="streak-days">5 أيام</span>
+            </div>
+        </header>
+
+        <!-- Main Content Area (For Map and Popups) -->
+        <main class="main-content" id="game-container">
+            <!-- Phaser Canvas will be injected here -->
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="spinner"></div>
+                <p>جاري تحميل عالم الأبطال...</p>
+            </div>
+        </main>
+
+        <!-- Recording Popup (Hidden by default) -->
+        <div class="popup-overlay" id="challenge-popup">
+            <div class="popup-content">
+                <button class="close-btn" id="close-popup"><i class="fa-solid fa-xmark"></i></button>
+                <div class="recording-animation hidden" id="recording-waves">
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                </div>
+                <h2 class="popup-title" id="popup-title">تحدي التلاوة</h2>
+                <h3 class="surah-name" id="popup-surah-name">سورة الإخلاص</h3>
+                
+                <div class="challenge-actions">
+                    <button class="action-btn record-btn" id="record-btn">
+                        <div class="mic-wave"></div>
+                        <i class="fa-solid fa-microphone"></i>
+                        <span>إبدأ التسجيل</span>
+                    </button>
+                </div>
+                
+                <div class="feedback-container hidden" id="feedback-container">
+                    <div class="feedback-icon" id="feedback-icon"><i class="fa-solid fa-check"></i></div>
+                    <p class="feedback-msg" id="feedback-msg">ممتاز! تلاوة رائعة!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listening Challenge Screen (Hidden by default) -->
+        <div id="listening-challenge-screen" class="view-section hidden">
+            <div class="listen-header">
+                <button class="back-btn" id="listen-back-btn"><i class="fa-solid fa-arrow-right"></i></button>
+                <div class="listen-title">
+                    <h2>🎧 تحدي الاستماع</h2>
+                    <p id="listen-surah-name">سورة الفلق</p>
+                </div>
+                <div class="progress-wrap">
+                    <div class="progress-bar" id="listen-progress"></div>
+                </div>
+            </div>
+
+            <div class="listen-middle">
+                <!-- Mascot Guide -->
+                <div class="listen-mascot">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Quran" alt="عم برهان">
+                    <div class="mascot-bubble">استمع بتركيز يا بطل، وتتبع الكلمات المقروءة!</div>
+                </div>
+                
+                <!-- Ayah Display Card (Karaoke effect area) -->
+                <div class="ayah-card" id="ayah-display">
+                    <!-- Words injected by JS -->
+                </div>
+            </div>
+
+            <!-- Sticky Bottom Audio Player -->
+            <div class="audio-player-bar">
+                <button class="player-btn small-btn" id="btn-slow"><i class="fa-solid fa-snail"></i></button>
+                <button class="player-btn" id="btn-prev"><i class="fa-solid fa-backward-step"></i></button>
+                <button class="player-btn main-play-btn" id="btn-play-pause"><i class="fa-solid fa-play"></i></button>
+                <button class="player-btn" id="btn-replay"><i class="fa-solid fa-rotate-left"></i></button>
+                <button class="player-btn small-btn" id="btn-next"><i class="fa-solid fa-forward-step"></i></button>
+            </div>
+            
+            <!-- Confetti Canvas overlay -->
+            <canvas id="confetti-canvas" class="hidden"></canvas>
+        </div>
+
+        <!-- Repeat Challenge Screen (Hidden by default) -->
+        <div id="repeat-challenge-screen" class="view-section hidden">
+            <div class="listen-header repeat-theme">
+                <button class="back-btn" id="repeat-back-btn"><i class="fa-solid fa-arrow-right"></i></button>
+                <div class="listen-title">
+                    <h2>🗣️ تحدي الترديد</h2>
+                    <p id="repeat-surah-name">سورة الإخلاص</p>
+                </div>
+                <div class="progress-wrap">
+                    <div class="progress-bar" id="repeat-progress"></div>
+                </div>
+            </div>
+
+            <div class="listen-middle">
+                <!-- Mascot Guide -->
+                <div class="listen-mascot" id="repeat-mascot">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Teacher" alt="عم برهان" id="mascot-img">
+                    <div class="mascot-bubble" id="repeat-bubble">استمع جيداً 🎧</div>
+                </div>
+                
+                <!-- Ayah Card -->
+                <div class="ayah-card" id="repeat-ayah-display">
+                    <!-- Text injected by JS -->
+                </div>
+
+                <!-- Interactive Mic Component -->
+                <div class="mic-container">
+                    <div class="mic-glow"></div>
+                    <div class="mic-circle" id="mic-indicator">
+                        <i class="fa-solid fa-microphone"></i>
+                    </div>
+                    <p class="mic-status" id="mic-status-text">انتظر دورك...</p>
+                </div>
+            </div>
+
+            <!-- Simple Bottom Controls -->
+            <div class="audio-player-bar">
+                <button class="player-btn" id="btn-repeat-prev"><i class="fa-solid fa-rotate-left"></i></button>
+                <button class="player-btn main-play-btn" id="btn-repeat-play-pause"><i class="fa-solid fa-play"></i></button>
+                <button class="player-btn" id="btn-repeat-next"><i class="fa-solid fa-forward-step"></i></button>
+            </div>
+        </div>
+
+        <!-- AI Recitation Challenge Screen (Hidden by default) -->
+        <div id="recitation-challenge-screen" class="view-section hidden">
+            <div class="listen-header recitation-theme">
+                <div class="header-top">
+                    <button class="back-btn" id="recitation-back-btn"><i class="fa-solid fa-arrow-right"></i></button>
+                    <div class="xp-badge-small"><i class="fa-solid fa-bolt"></i> <span id="recitation-current-xp">120</span> XP</div>
+                </div>
+                <div class="listen-title">
+                    <h2>🎤 تحدي التلاوة</h2>
+                    <p id="recitation-surah-name">سورة الإخلاص</p>
+                </div>
+                <div class="progress-wrap">
+                    <div class="progress-bar" id="recitation-progress"></div>
+                </div>
+            </div>
+
+            <div class="listen-middle">
+                <!-- Mascot Guide -->
+                <div class="listen-mascot">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Expert" alt="عم برهان" id="recitation-mascot-img">
+                    <div class="mascot-bubble" id="recitation-bubble">حان وقت التألق يا بطل! اقرأ بصوتك الجميل لجمع النجوم 🌟</div>
+                </div>
+                
+                <!-- Ayah Card with Show/Hide -->
+                <div class="ayah-card recitation-card" id="recitation-ayah-display">
+                    <!-- Text injected by JS -->
+                    <button class="toggle-eye-btn" id="btn-toggle-text"><i class="fa-solid fa-eye"></i></button>
+                </div>
+
+                <!-- Feedback Area / Mini results -->
+                <div class="recitation-feedback hidden" id="recitation-feedback-panel">
+                    <div class="accuracy-score">دقة التلاوة: <span id="accuracy-value">0%</span></div>
+                    <div class="feedback-stars" id="feedback-stars"></div>
+                </div>
+            </div>
+
+            <!-- Bottom Giant Mic Section -->
+            <div class="recitation-footer">
+                <div class="mic-controls">
+                    <div class="wave-container hidden" id="recitation-waves">
+                        <div class="rec-wave"></div>
+                        <div class="rec-wave"></div>
+                        <div class="rec-wave"></div>
+                        <div class="rec-wave"></div>
+                        <div class="rec-wave"></div>
+                    </div>
+                    
+                    <button class="giant-mic-btn" id="btn-main-mic">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    
+                    <p class="status-msg" id="recitation-status-text">اضغط للتحدث</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Puzzle Challenge Screen (Hidden by default) -->
+        <div id="puzzle-challenge-screen" class="view-section hidden">
+            <div class="listen-header puzzle-theme">
+                <div class="header-top">
+                    <button class="back-btn" id="puzzle-back-btn"><i class="fa-solid fa-arrow-right"></i></button>
+                    <div class="xp-badge-small"><i class="fa-solid fa-puzzle-piece"></i> <span id="puzzle-current-xp">120</span> XP</div>
+                </div>
+                <div class="listen-title">
+                    <h2>🧩 تحدي اللغز</h2>
+                    <p id="puzzle-surah-name">سورة الإخلاص</p>
+                </div>
+                <div class="progress-wrap">
+                    <div class="progress-bar" id="puzzle-progress"></div>
+                </div>
+            </div>
+
+            <div class="listen-middle">
+                <!-- Mascot Guide -->
+                <div class="listen-mascot">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Idea" alt="عم برهان" id="puzzle-mascot-img">
+                    <div class="mascot-bubble" id="puzzle-bubble">رتب الكلمات لتكتمل الآية يا بطل! 🕵️‍♂️</div>
+                </div>
+                
+                <!-- Drop Zones (Placeholder area) -->
+                <div class="puzzle-board" id="drop-zones-container">
+                    <!-- Drop targets injected by JS -->
+                </div>
+
+                <!-- Draggable Words area -->
+                <div class="puzzle-words-pool" id="puzzle-words-pool">
+                    <!-- Scrambled word cards injected by JS -->
+                </div>
+            </div>
+
+            <!-- Bottom Tools Section -->
+            <div class="puzzle-footer">
+                <div class="puzzle-tools">
+                    <button class="tool-btn hint-btn" id="btn-puzzle-hint">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>تلميح</span>
+                    </button>
+                    <button class="tool-btn listen-btn" id="btn-puzzle-listen">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span>استماع</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Animation Overlay (Hidden by default) -->
+        <div class="success-overlay hidden" id="success-overlay">
+            <div class="success-stars">
+                <i class="fa-solid fa-star star-1"></i>
+                <i class="fa-solid fa-star star-2"></i>
+                <i class="fa-solid fa-star star-3"></i>
+            </div>
+            <h1 class="success-title">+50 XP</h1>
+            <p>أنت بطل رائع!</p>
+            <button class="btn-primary" id="continue-btn">متابعة الرحلة</button>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>الخريطة</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-trophy"></i>
+                <span>التحديات</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-user-astronaut"></i>
+                <span>إنجازاتي</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-gear"></i>
+                <span>الإعدادات</span>
+            </a>
+        </nav>
+        </div> <!-- End Main App -->
+
+    </div>
+
+    <!-- External Libraries -->
+    <!-- GSAP for UI Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Howler for Audio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    
+    <!-- Phaser for Interactive Map -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/listening-challenge.js"></script>
+    <script src="js/repeat-challenge.js"></script>
+    <script src="js/recitation-challenge.js"></script>
+    <script src="js/puzzle-challenge.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
