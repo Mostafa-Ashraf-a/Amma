@@ -59,7 +59,7 @@ class RecitationChallenge {
 
         try {
             console.log("RecitationChallenge: Fetching sync data...");
-            const response = await fetch('/quran-sync.json');
+            const response = await fetch('quran-sync.json');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             this.ayahs = data.ayahs;

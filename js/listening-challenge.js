@@ -69,8 +69,8 @@ class ListeningChallenge {
             console.log("ListeningChallenge: Fetching sync data...");
             this.elements.ayahDisplay.innerHTML = '<div class="loading-text">جاري تحميل الآيات...</div>';
             
-            // Using absolute path /quran-sync.json to ensure it works on subpaths
-            const req = await fetch('/quran-sync.json');
+            // Using relative path to support subdirectory hosting (e.g. GitHub Pages)
+            const req = await fetch('quran-sync.json');
             if (!req.ok) throw new Error(`HTTP error! status: ${req.status}`);
             
             this.audioData = await req.json();
