@@ -73,6 +73,11 @@ class ListeningChallenge {
             const req = await fetch('quran-sync.json');
             if (!req.ok) throw new Error(`HTTP error! status: ${req.status}`);
             
+            const contentType = req.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("عذراً، الخادم لم يرسل ملف البيانات بشكل صحيح (تم استلام HTML بدلاً من JSON). يرجى التأكد من رفع الملفات بشكل سليم.");
+            }
+
             this.audioData = await req.json();
             console.log("ListeningChallenge: Data loaded successfully", this.audioData);
             

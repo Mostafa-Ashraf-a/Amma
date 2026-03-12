@@ -61,6 +61,12 @@ class RepeatChallenge {
             console.log("RepeatChallenge: Fetching sync data...");
             const response = await fetch('quran-sync.json');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("خطأ: تم استلام ملف غير صالح من السيرفر.");
+            }
+
             const data = await response.json();
             this.ayahs = data.ayahs;
             
