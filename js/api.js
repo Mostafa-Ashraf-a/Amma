@@ -1,100 +1,98 @@
-// API Communication Module & Hybrid Storage Logic
-const API_URL = 'http://localhost:3000';
+import { db } from './firebase-config.js';
+import { 
+    doc, 
+    getDoc, 
+    setDoc, 
+    updateDoc, 
+    collection, 
+    getDocs, 
+    writeBatch 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Initial Data (Seed) from your current db.json
+// Initial Data (Seed)
 const INITIAL_DATA = {
     student: {
-        id: 1, name: "أحمد بطل القرآن", xp: 120, level: 2, avatar: "👦", streak: 5, badges: ["بطل البداية"]
+        id: "hero_1", // Using string IDs for Firestore
+        name: "أحمد بطل القرآن", 
+        xp: 120, 
+        level: 2, 
+        avatar: "👦", 
+        streak: 5, 
+        badges: ["بطل البداية"]
     },
     villages: [
-        { id: 1, name: "قرية الناس", surah: "الناس", status: "completed", stars: 3, x: 100, y: 700 },
-        { id: 2, name: "قرية الفلق", surah: "الفلق", status: "completed", stars: 2, x: 300, y: 550 },
-        { id: 3, name: "قرية الإخلاص", surah: "الإخلاص", status: "unlocked", stars: 0, x: 120, y: 400 },
-        { id: 4, name: "قرية المسد", surah: "المسد", status: "locked", stars: 0, x: 300, y: 250 },
-        { id: 5, name: "قرية النصر", surah: "النصر", status: "locked", stars: 0, x: 150, y: 100 }
+        { id: "1", name: "قرية الناس", surah: "الناس", status: "completed", stars: 3, x: 100, y: 700 },
+        { id: "2", name: "قرية الفلق", surah: "الفلق", status: "completed", stars: 2, x: 300, y: 550 },
+        { id: "3", name: "قرية الإخلاص", surah: "الإخلاص", status: "unlocked", stars: 0, x: 120, y: 400 },
+        { id: "4", name: "قرية المسد", surah: "المسد", status: "locked", stars: 0, x: 300, y: 250 },
+        { id: "5", name: "قرية النصر", surah: "النصر", status: "locked", stars: 0, x: 150, y: 100 }
     ]
 };
 
 const api = {
-    isServerActive: false,
-
-    async checkServer() {
-        try {
-            const res = await fetch(`${API_URL}/student`, { method: 'HEAD' });
-            this.isServerActive = res.ok;
-        } catch {
-            this.isServerActive = false;
+    /**
+     * Initialize Firestore with seed data if empty
+     */
+    async ensureInitialized() {
+        const studentDoc = await getDoc(doc(db, "students", "hero_1"));
+        if (!studentDoc.exists()) {
+            console.log("Initializing Firebase with seed data...");
+            // Seed student
+            await setDoc(doc(db, "students", "hero_1"), INITIAL_DATA.student);
+            
+            // Seed villages via batch
+            const batch = writeBatch(db);
+            INITIAL_DATA.villages.forEach(v => {
+                const vRef = doc(db, "villages", v.id);
+                batch.set(vRef, v);
+            });
+            await batch.commit();
         }
     },
 
-    // --- Data Management (Hybrid: Server vs LocalStorage) ---
     async getUserData() {
-        await this.checkServer();
-        if (this.isServerActive) {
-            const res = await fetch(`${API_URL}/student`);
-            return await res.json();
-        } else {
-            // Read from LocalStorage or initialize with seed
-            let data = localStorage.getItem('juz_amma_student');
-            if (!data) {
-                localStorage.setItem('juz_amma_student', JSON.stringify(INITIAL_DATA.student));
-                return INITIAL_DATA.student;
-            }
-            return JSON.parse(data);
-        }
+        await this.ensureInitialized();
+        const docRef = doc(db, "students", "hero_1");
+        const docSnap = await getDoc(docRef);
+        return docSnap.data();
     },
 
     async getVillages() {
-        if (this.isServerActive) {
-            const res = await fetch(`${API_URL}/villages`);
-            return await res.json();
-        } else {
-            let data = localStorage.getItem('juz_amma_villages');
-            if (!data) {
-                localStorage.setItem('juz_amma_villages', JSON.stringify(INITIAL_DATA.villages));
-                return INITIAL_DATA.villages;
-            }
-            return JSON.parse(data);
-        }
+        await this.ensureInitialized();
+        const querySnapshot = await getDocs(collection(db, "villages"));
+        const villages = [];
+        querySnapshot.forEach((doc) => {
+            villages.push(doc.data());
+        });
+        // Sort by ID to maintain map order
+        return villages.sort((a, b) => parseInt(a.id) - parseInt(b.id));
     },
 
     async updateUserProgress(xpToAdd) {
-        if (this.isServerActive) {
-            const user = await this.getUserData();
-            const newXp = user.xp + xpToAdd;
-            const newLevel = Math.floor(newXp / 500) + 1;
-            const res = await fetch(`${API_URL}/student`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ xp: newXp, level: newLevel }),
-            });
-            return await res.json();
-        } else {
-            const user = await this.getUserData();
-            user.xp += xpToAdd;
-            user.level = Math.floor(user.xp / 500) + 1;
-            localStorage.setItem('juz_amma_student', JSON.stringify(user));
-            return user;
-        }
+        const user = await this.getUserData();
+        const newXp = user.xp + xpToAdd;
+        const newLevel = Math.floor(newXp / 500) + 1;
+        
+        const docRef = doc(db, "students", "hero_1");
+        await updateDoc(docRef, {
+            xp: newXp,
+            level: newLevel
+        });
+        
+        return { ...user, xp: newXp, level: newLevel };
     },
 
     async updateVillageStatus(villageId, status, stars) {
-        if (this.isServerActive) {
-            const res = await fetch(`${API_URL}/villages/${villageId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status, stars }),
-            });
-            return await res.json();
-        } else {
-            const villages = await this.getVillages();
-            const village = villages.find(v => v.id == villageId);
-            if (village) {
-                village.status = status;
-                village.stars = stars;
-                localStorage.setItem('juz_amma_villages', JSON.stringify(villages));
-            }
-            return village;
-        }
+        const docRef = doc(db, "villages", villageId.toString());
+        await updateDoc(docRef, {
+            status: status,
+            stars: stars
+        });
+        
+        return { id: villageId, status, stars };
     }
 };
+
+// Expose to window for traditional scripts (ui.js, main.js)
+window.api = api;
+export default api;
