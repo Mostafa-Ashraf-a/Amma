@@ -46,3 +46,7 @@ const audioManager = {
         // Note: Browsers require user interaction before playing audio
     }
 };
+
+// Global Exposure
+window.audioManager = audioManager;
+export default audioManager;

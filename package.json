@@ -3,14 +3,11 @@
   "version": "1.0.0",
   "description": "Prototype for Juz Amma Kids App",
   "scripts": {
-    "start": "serve -l 8080 .",
-    "api": "json-server --watch db.json --port 3000",
-    "dev": "concurrently \"npm run start\" \"npm run api\""
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "concurrently": "^8.2.2",
-    "json-server": "^0.17.4",
-    "serve": "^14.2.1"
   },
   "devDependencies": {
     "vite": "^7.3.1"

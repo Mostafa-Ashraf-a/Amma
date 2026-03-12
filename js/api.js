@@ -34,19 +34,29 @@ const api = {
      * Initialize Firestore with seed data if empty
      */
     async ensureInitialized() {
-        const studentDoc = await getDoc(doc(db, "students", "hero_1"));
-        if (!studentDoc.exists()) {
-            console.log("Initializing Firebase with seed data...");
-            // Seed student
-            await setDoc(doc(db, "students", "hero_1"), INITIAL_DATA.student);
-            
-            // Seed villages via batch
-            const batch = writeBatch(db);
-            INITIAL_DATA.villages.forEach(v => {
-                const vRef = doc(db, "villages", v.id);
-                batch.set(vRef, v);
-            });
-            await batch.commit();
+        try {
+            console.log("Checking database connection...");
+            const studentDoc = await getDoc(doc(db, "students", "hero_1"));
+            if (!studentDoc.exists()) {
+                console.log("Initializing Firebase with seed data...");
+                // Seed student
+                await setDoc(doc(db, "students", "hero_1"), INITIAL_DATA.student);
+                
+                // Seed villages via batch
+                const batch = writeBatch(db);
+                INITIAL_DATA.villages.forEach(v => {
+                    const vRef = doc(db, "villages", v.id);
+                    batch.set(vRef, v);
+                });
+                await batch.commit();
+                console.log("Firebase initialized successfully.");
+            }
+        } catch (error) {
+            console.error("Firebase Initialization Error:", error);
+            // Don't throw, let the app try to work or show error
+            if (error.code === 'permission-denied' || error.message.includes('disabled')) {
+                alert("⚠️ خطأ في تهيئة Firebase: تأكد من تفعيل Cloud Firestore API في لوحة تحكم Firebase.");
+            }
         }
     },
 

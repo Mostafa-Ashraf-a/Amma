@@ -47,6 +47,9 @@ class RepeatChallenge {
         this.elements.surahName.textContent = `سورة ${village.surah}`;
         this.currentAyahIndex = 0;
         
+        // Reset Progress Bar
+        gsap.set(this.elements.progressBar, { width: '0%' });
+        
         // Show screen
         document.getElementById('village-screen').classList.add('hidden');
         document.querySelector('.bottom-nav')?.classList.add('hidden');

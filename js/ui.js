@@ -628,3 +628,4 @@ const ui = {
 
 // Global Exposure
 window.ui = ui;
+export default ui;

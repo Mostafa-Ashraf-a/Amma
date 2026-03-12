@@ -481,3 +481,6 @@ const mapEngine = {
         this.game = new Phaser.Game(config);
     }
 };
+// Global Exposure
+window.mapEngine = mapEngine;
+export default mapEngine;
